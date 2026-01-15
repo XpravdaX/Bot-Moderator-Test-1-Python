@@ -1,5 +1,11 @@
 import logging
 import os
+import sys
+from pathlib import Path
+
+# Добавляем src в путь для импортов
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
+
 from telebot import TeleBot
 from config import Config
 from database import db
@@ -35,7 +41,7 @@ def main():
 
     # Проверяем токен
     if not Config.TOKEN:
-        logger.error("Токен бота не найден! Укажите его в переменной окружения BOT_TOKEN")
+        logger.error("Токен бота не найден! Укажите его в .env файле")
         return
 
     # Создаем экземпляр бота
@@ -46,7 +52,6 @@ def main():
 
     logger.info("=" * 60)
     logger.info("🤖 Умный бот-модератор запускается...")
-    logger.info(f"📊 Загружено слов: {len(db.get_custom_words())}")
     logger.info(f"⚙️  База данных: {Config.DB_PATH}")
     logger.info("=" * 60)
 
@@ -57,6 +62,7 @@ def main():
 
     except Exception as e:
         logger.error(f"❌ Ошибка запуска бота: {e}")
+        raise
 
     finally:
         # Закрываем соединение с БД
